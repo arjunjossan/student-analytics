@@ -1,12 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
-
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Student Analytics | Login</title>
     <script src="https://cdn.tailwindcss.com"></script>
-
     <style>
         body {
             font-family: Inter, sans-serif;
@@ -14,86 +12,111 @@
     </style>
 </head>
 
-<body class="bg-gray-100">
-
-<div class="min-h-screen flex items-center justify-center px-4">
-
-    <div class="w-full max-w-md">
-
-        <!-- 🔥 CARD -->
-        <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
-
-            <!-- LOGO -->
-            <div class="mb-6 text-center">
-                <div class="w-12 h-12 mx-auto mb-3 bg-black text-white flex items-center justify-center rounded-xl text-lg">
-                    📊
-                </div>
-
-                <h2 class="text-xl font-semibold text-gray-900">
-                    Welcome back
-                </h2>
-                <p class="text-sm text-gray-500 mt-1">
-                    Login to your dashboard
-                </p>
-            </div>
-
-            <!-- FORM -->
-            <form method="POST" class="space-y-5">
-                {% csrf_token %}
-
-                <!-- Username -->
-                <div>
-                    <label class="text-sm text-gray-600">Username</label>
-                    <input 
-                        type="text" 
-                        name="username"
-                        required
-                        class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none text-sm"
-                    >
-                </div>
-
-                <!-- Password -->
-                <div>
-                    <label class="text-sm text-gray-600">Password</label>
-                    <input 
-                        type="password" 
-                        name="password"
-                        required
-                        class="w-full mt-1 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-black focus:outline-none text-sm"
-                    >
-                </div>
-
-                <!-- OPTIONS -->
-                <div class="flex justify-between text-sm">
-                    <label class="flex items-center gap-2 text-gray-600">
-                        <input type="checkbox">
-                        Remember me
-                    </label>
-                    <span class="text-gray-500 cursor-pointer hover:underline">
-                        Forgot password?
-                    </span>
-                </div>
-
-                <!-- BUTTON -->
-                <button 
-                    type="submit"
-                    class="w-full bg-black text-white py-2.5 rounded-lg text-sm font-medium hover:opacity-90 transition"
-                >
-                    Sign in
-                </button>
-
-            </form>
-
-        </div>
-
-        <!-- FOOTER -->
-        <p class="text-center text-xs text-gray-400 mt-6">
-            Student Analytics • Secure Login
-        </p>
-
+<body class="min-h-screen bg-slate-50">
+    <div class="absolute inset-0 overflow-hidden">
+        <div class="absolute -left-28 top-16 h-72 w-72 rounded-full bg-cyan-300/30 blur-3xl"></div>
+        <div class="absolute right-10 top-32 h-72 w-72 rounded-full bg-indigo-300/20 blur-3xl"></div>
     </div>
 
-</div>
+    <main class="relative mx-auto flex min-h-screen max-w-6xl items-center justify-center px-6 py-12">
+        <div class="w-full grid gap-8 lg:grid-cols-[1.05fr_0.95fr]">
+            <section class="hidden lg:flex flex-col justify-between rounded-[36px] border border-slate-200/80 bg-white/90 p-10 shadow-xl backdrop-blur-sm">
+                <div>
+                    <div class="inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-cyan-100 text-3xl">
+                        📊
+                    </div>
+                    <h1 class="mt-8 text-4xl font-semibold tracking-tight text-slate-900">Student Analytics</h1>
+                    <p class="mt-5 max-w-xl text-slate-600 leading-8">
+                        Access the dashboard built for modern schools. Track attendance, class performance, and engagement from a clean, intelligent workspace.
+                    </p>
+                </div>
 
+                <div class="space-y-6">
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="rounded-[28px] border border-slate-200 bg-slate-50 p-5">
+                            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Attendance</p>
+                            <p class="mt-4 text-3xl font-semibold text-slate-900">92%</p>
+                            <p class="mt-2 text-sm text-slate-500">Weekly class attendance overview.</p>
+                        </div>
+                        <div class="rounded-[28px] border border-slate-200 bg-slate-50 p-5">
+                            <p class="text-xs uppercase tracking-[0.35em] text-slate-500">Growth</p>
+                            <p class="mt-4 text-3xl font-semibold text-slate-900">+12%</p>
+                            <p class="mt-2 text-sm text-slate-500">Improvement in student outcomes.</p>
+                        </div>
+                    </div>
+
+                    <div class="rounded-[28px] bg-gradient-to-r from-cyan-500 to-sky-500 p-6 text-slate-950 shadow-sm">
+                        <p class="text-xs uppercase tracking-[0.35em]">Better decisions</p>
+                        <p class="mt-3 text-xl font-semibold">A modern analytics experience for educators</p>
+                        <p class="mt-2 text-sm leading-6">
+                            Review reports, monitor trends, and share insights with a polished dashboard designed for clarity and action.
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="rounded-[36px] bg-white p-8 shadow-xl ring-1 ring-slate-200/80 sm:p-10">
+                <div class="mb-8 text-center">
+                    <div class="mx-auto mb-4 inline-flex h-16 w-16 items-center justify-center rounded-3xl bg-cyan-100 text-3xl text-slate-900">
+                        📈
+                    </div>
+                    <h2 class="text-3xl font-semibold text-slate-900">Sign in to Student Analytics</h2>
+                    <p class="mt-3 text-sm text-slate-500">
+                        Enter your institution credentials for a secure and fast login.
+                    </p>
+                </div>
+
+                <form method="POST" class="space-y-6">
+                    {% csrf_token %}
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Username</label>
+                        <input
+                            type="text"
+                            name="username"
+                            autocomplete="username"
+                            required
+                            class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm text-slate-900 outline-none transition focus:border-cyan-400 focus:bg-white focus:ring-2 focus:ring-cyan-100"
+                        />
+                    </div>
+
+                    <div class="space-y-2">
+                        <label class="block text-sm font-medium text-slate-700">Password</label>
+                        <input
+                            type="password"
+                            name="password"
+                            autocomplete="current-password"
+                            required
+                            class="w-full rounded-3xl border border-slate-200 bg-slate-50 px-5 py-3 text-sm text-slate-900 outline-none transition focus:border-cyan-400 focus:bg-white focus:ring-2 focus:ring-cyan-100"
+                        />
+                    </div>
+
+                    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between text-sm text-slate-500">
+                        <label class="inline-flex items-center gap-3">
+                            <input type="checkbox" class="h-4 w-4 rounded border-slate-300 bg-white text-cyan-500 focus:ring-cyan-400" />
+                            Remember me
+                        </label>
+                        <a href="#" class="font-medium text-cyan-600 hover:text-cyan-500">Forgot password?</a>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="w-full rounded-3xl bg-cyan-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-cyan-500"
+                    >
+                        Sign in
+                    </button>
+                </form>
+
+                <div class="mt-8 rounded-[28px] border border-slate-200 bg-slate-50 p-5">
+                    <p class="text-sm text-slate-500">Unlock full dashboard access for attendance, grades, and engagement analytics.</p>
+                    <p class="mt-3 text-sm text-slate-700">Log in now to browse reports, monitor trends, and export classroom insights with a modern UI.</p>
+                </div>
+
+                <p class="mt-8 text-center text-sm text-slate-500">
+                    New to Student Analytics?
+                    <a href="#" class="font-medium text-cyan-600 hover:text-cyan-500">Create an account</a>
+                </p>
+            </section>
+        </div>
+    </main>
 </body>
 </html>
