@@ -1,1104 +1,1537 @@
-
-
-
-
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📊 Student Analytics Dashboard</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
-
-    <style>
-        :root {
-            --yellow: #FFD93D;
-            --orange: #FF6B35;
-            --pink: #FF4FA3;
-            --green: #06D6A0;
-            --blue: #118AB2;
-            --purple: #9B5DE5;
-            --red: #EF233C;
-            --bg: #FFF8F0;
-            --white: #FFFFFF;
-            --dark: #1A1A2E;
-            --ink: #2D2D2D;
-            --border: 3px solid #1A1A2E;
-            --shadow: 5px 5px 0px #1A1A2E;
-            --radius: 16px;
-        }
-
-        * { box-sizing: border-box; margin: 0; padding: 0; }
-
-        body {
-            background: var(--bg);
-            font-family: 'Nunito', sans-serif;
-            color: var(--ink);
-            background-image:
-                radial-gradient(circle at 10% 20%, rgba(255,217,61,0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(155,93,229,0.12) 0%, transparent 40%),
-                radial-gradient(circle at 50% 50%, rgba(6,214,160,0.08) 0%, transparent 60%);
-            min-height: 100vh;
-        }
-
-        /* ─── NAVBAR ─── */
-        .navbar {
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            background: var(--dark);
-            border-bottom: 4px solid var(--yellow);
-            padding: 0 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            height: 68px;
-            box-shadow: 0 4px 0 rgba(0,0,0,0.3);
-        }
-
-        .navbar-brand {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: 'Fredoka One', cursive;
-            font-size: 22px;
-            color: var(--yellow);
-            text-decoration: none;
-        }
-
-        .navbar-brand .icon-wrap {
-            background: var(--yellow);
-            color: var(--dark);
-            width: 38px;
-            height: 38px;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 20px;
-        }
-
-        /* Upload zone inside navbar */
-        .navbar-upload {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .upload-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            background: #2a2a45;
-            border: 2px dashed rgba(255,217,61,0.5);
-            border-radius: 10px;
-            padding: 6px 14px;
-            cursor: pointer;
-            transition: 0.2s;
-            color: #ccc;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        .upload-label:hover {
-            border-color: var(--yellow);
-            color: var(--yellow);
-            background: #333355;
-        }
-
-        .upload-label input[type="file"] {
-            display: none;
-        }
-
-        .file-name-display {
-            color: var(--green);
-            font-size: 12px;
-            font-weight: 700;
-            max-width: 140px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-        }
-
-        .btn-upload {
-            background: var(--yellow);
-            color: var(--dark);
-            border: var(--border);
-            border-radius: 10px;
-            padding: 7px 18px;
-            font-weight: 900;
-            font-family: 'Fredoka One', cursive;
-            font-size: 14px;
-            cursor: pointer;
-            box-shadow: 3px 3px 0 var(--orange);
-            transition: 0.15s;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .btn-upload:hover {
-            transform: translate(-1px, -1px);
-            box-shadow: 4px 4px 0 var(--orange);
-        }
-
-        .btn-upload:active {
-            transform: translate(2px, 2px);
-            box-shadow: 1px 1px 0 var(--orange);
-        }
-
-        .btn-logout {
-            background: transparent;
-            color: #ff7a7a;
-            border: 2px solid #ff7a7a;
-            border-radius: 8px;
-            padding: 6px 14px;
-            font-weight: 800;
-            font-size: 13px;
-            cursor: pointer;
-            transition: 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .btn-logout:hover {
-            background: #ff7a7a;
-            color: var(--dark);
-        }
-
-        /* ─── MAIN CONTENT ─── */
-        .main {
-            padding: 28px 32px;
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-
-        .section-title {
-            font-family: 'Fredoka One', cursive;
-            font-size: 15px;
-            letter-spacing: 2px;
-            text-transform: uppercase;
-            color: #888;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .section-title::after {
-            content: '';
-            flex: 1;
-            height: 2px;
-            background: repeating-linear-gradient(90deg, #ddd 0, #ddd 6px, transparent 6px, transparent 12px);
-        }
-
-        /* ─── CARDS ─── */
-        .card {
-            background: var(--white);
-            border: var(--border);
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-        }
-
-        /* ─── STAT CARDS ─── */
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 18px;
-            margin-bottom: 28px;
-        }
-
-        .stat-card {
-            background: var(--white);
-            border: var(--border);
-            border-radius: var(--radius);
-            padding: 20px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.2s, box-shadow 0.2s;
-            cursor: default;
-        }
-
-        .stat-card:hover {
-            transform: translate(-3px, -3px);
-            box-shadow: 8px 8px 0 var(--dark);
-        }
-
-        .stat-card .corner-deco {
-            position: absolute;
-            top: -12px;
-            right: -12px;
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            opacity: 0.15;
-        }
-
-        .stat-card.card-yellow { box-shadow: 5px 5px 0 var(--yellow); border-bottom-color: var(--yellow); }
-        .stat-card.card-blue   { box-shadow: 5px 5px 0 var(--blue);   border-bottom-color: var(--blue); }
-        .stat-card.card-green  { box-shadow: 5px 5px 0 var(--green);  border-bottom-color: var(--green); }
-        .stat-card.card-purple { box-shadow: 5px 5px 0 var(--purple); border-bottom-color: var(--purple); }
-
-        .stat-card .card-icon {
-            font-size: 28px;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        .stat-card .card-label {
-            font-size: 11px;
-            font-weight: 800;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #999;
-            margin-bottom: 4px;
-        }
-
-        .stat-card .card-value {
-            font-family: 'Fredoka One', cursive;
-            font-size: 30px;
-            line-height: 1;
-            margin-bottom: 2px;
-        }
-
-        .stat-card .card-sub {
-            font-size: 12px;
-            font-weight: 700;
-            color: #aaa;
-        }
-
-        .val-yellow { color: var(--orange); }
-        .val-blue   { color: var(--blue); }
-        .val-green  { color: var(--green); }
-        .val-purple { color: var(--purple); }
-
-        /* ─── BOTTOM GRID ─── */
-        .bottom-grid {
-            display: grid;
-            grid-template-columns: 300px 1fr;
-            gap: 20px;
-        }
-
-        .left-col {
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        /* ─── TOP 5 ─── */
-        .top5-card {
-            padding: 20px;
-        }
-
-        .top5-card h2 {
-            font-family: 'Fredoka One', cursive;
-            font-size: 17px;
-            margin-bottom: 14px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .top5-list {
-            list-style: none;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .top5-item {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 12px;
-            border-radius: 10px;
-            border: 2px solid #eee;
-            transition: 0.2s;
-        }
-
-        .top5-item:hover { border-color: var(--yellow); background: #fffdf0; }
-
-        .rank-badge {
-            width: 26px;
-            height: 26px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 900;
-            font-size: 12px;
-            flex-shrink: 0;
-            border: 2px solid currentColor;
-        }
-
-        .rank-1 { background: var(--yellow); color: var(--dark); border-color: var(--dark); }
-        .rank-2 { background: #e8e8e8; color: #555; }
-        .rank-3 { background: #ffe0cc; color: var(--orange); }
-        .rank-4, .rank-5 { background: #f0f0f0; color: #888; }
-
-        .top5-name { font-weight: 800; font-size: 14px; flex: 1; }
-
-        .score-pill {
-            background: var(--green);
-            color: white;
-            font-weight: 900;
-            font-size: 12px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            border: 2px solid var(--dark);
-        }
-
-        /* ─── MINI CHARTS AREA ─── */
-        .chart-mini {
-            padding: 16px;
-        }
-
-        .chart-mini h2 {
-            font-family: 'Fredoka One', cursive;
-            font-size: 15px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .chart-mini img {
-            width: 100%;
-            border-radius: 10px;
-            border: 2px solid #eee;
-        }
-
-        .chart-placeholder {
-            width: 100%;
-            height: 120px;
-            border-radius: 10px;
-            border: 2px dashed #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #ccc;
-            font-size: 13px;
-            font-weight: 700;
-        }
-
-        /* ─── TABLE CARD ─── */
-        .table-card {
-            padding: 22px;
-        }
-
-        .table-card-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 16px;
-        }
-
-        .table-card-header h2 {
-            font-family: 'Fredoka One', cursive;
-            font-size: 17px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .search-box {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background: #f5f5f5;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            padding: 5px 12px;
-            font-size: 13px;
-            font-weight: 700;
-            color: #aaa;
-        }
-
-        .search-box input {
-            background: none;
-            border: none;
-            outline: none;
-            font-family: 'Nunito', sans-serif;
-            font-weight: 700;
-            font-size: 13px;
-            color: var(--ink);
-            width: 150px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 6px;
-        }
-
-        thead th {
-            font-size: 11px;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            text-transform: uppercase;
-            color: #999;
-            padding: 6px 14px;
-            text-align: left;
-        }
-
-        tbody tr {
-            background: #fafafa;
-            border-radius: 10px;
-            transition: 0.2s;
-        }
-
-        tbody tr:hover { background: #fff3e0; }
-
-        tbody td {
-            padding: 10px 14px;
-            font-size: 14px;
-            font-weight: 700;
-            vertical-align: middle;
-        }
-
-        tbody td:first-child {
-            border-radius: 10px 0 0 10px;
-            border-left: 3px solid transparent;
-        }
-
-        tbody tr:hover td:first-child { border-left-color: var(--orange); }
-
-        tbody td:last-child { border-radius: 0 10px 10px 0; }
-
-        .name-cell {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .avatar {
-            width: 30px;
-            height: 30px;
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 13px;
-            font-weight: 900;
-            border: 2px solid var(--dark);
-            flex-shrink: 0;
-        }
-
-        /* Grade badges */
-        .grade {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            border-radius: 8px;
-            font-weight: 900;
-            font-size: 13px;
-            border: 2px solid var(--dark);
-        }
-
-        .grade-A { background: var(--green);  color: white; }
-        .grade-B { background: var(--blue);   color: white; }
-        .grade-C { background: var(--yellow); color: var(--dark); }
-        .grade-D { background: var(--red);    color: white; }
-
-        .avg-bar-wrap {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .avg-bar {
-            height: 6px;
-            border-radius: 4px;
-            background: #eee;
-            flex: 1;
-            overflow: hidden;
-        }
-
-        .avg-bar-fill {
-            height: 100%;
-            border-radius: 4px;
-            background: linear-gradient(90deg, var(--green), var(--blue));
-        }
-
-        .avg-val { font-size: 13px; font-weight: 900; color: var(--blue); }
-
-        /* ─── CHARTS ROW ─── */
-        .charts-row {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-            margin-top: 20px;
-        }
-
-        .big-chart-card {
-            padding: 18px;
-        }
-
-        .big-chart-card h2 {
-            font-family: 'Fredoka One', cursive;
-            font-size: 15px;
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .big-chart-card img {
-            width: 100%;
-            border-radius: 10px;
-            border: 2px solid #eee;
-        }
-
-        .chart-ph {
-            width: 100%;
-            height: 160px;
-            background: repeating-linear-gradient(135deg, #f8f8f8, #f8f8f8 10px, #f0f0f0 10px, #f0f0f0 20px);
-            border-radius: 10px;
-            border: 2px dashed #ddd;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #bbb;
-            font-size: 12px;
-            font-weight: 800;
-            gap: 6px;
-        }
-
-        .chart-ph i { font-size: 30px; opacity: 0.4; }
-
-        /* ─── INLINE MINI BAR CHART ─── */
-        .bar-chart-inline {
-            display: flex;
-            align-items: flex-end;
-            gap: 10px;
-            height: 90px;
-            padding: 8px 0;
-        }
-
-        .bar-group {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 4px;
-            flex: 1;
-        }
-
-        .bar-group .bar {
-            width: 100%;
-            border-radius: 6px 6px 0 0;
-            border: 2px solid var(--dark);
-            transition: 0.3s;
-        }
-
-        .bar-group .bar-label {
-            font-size: 10px;
-            font-weight: 900;
-            color: #888;
-            text-align: center;
-        }
-
-        /* ─── STICKER DECO ─── */
-        .sticker {
-            display: inline-flex;
-            align-items: center;
-            gap: 4px;
-            background: var(--yellow);
-            border: 2px solid var(--dark);
-            border-radius: 20px;
-            padding: 2px 10px;
-            font-size: 11px;
-            font-weight: 900;
-            box-shadow: 2px 2px 0 var(--dark);
-        }
-
-        /* ─── SCORE SUBJECT ─── */
-        .score-num {
-            font-weight: 900;
-            font-size: 14px;
-        }
-
-        .score-high { color: var(--green); }
-        .score-mid  { color: var(--orange); }
-        .score-low  { color: var(--red); }
-
-        /* ─── TOAST ─── */
-        .toast {
-            position: fixed;
-            bottom: 24px;
-            right: 24px;
-            background: var(--dark);
-            color: white;
-            padding: 12px 20px;
-            border-radius: 12px;
-            border: 2px solid var(--green);
-            font-weight: 800;
-            font-size: 13px;
-            display: none;
-            z-index: 999;
-            box-shadow: 4px 4px 0 var(--green);
-            animation: slideUp 0.3s ease;
-        }
-
-        @keyframes slideUp {
-            from { transform: translateY(20px); opacity: 0; }
-            to   { transform: translateY(0);    opacity: 1; }
-        }
-
-        /* ─── ANIMATIONS ─── */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-
-        .stat-card { animation: fadeIn 0.4s ease both; }
-        .stat-card:nth-child(1) { animation-delay: 0.05s; }
-        .stat-card:nth-child(2) { animation-delay: 0.10s; }
-        .stat-card:nth-child(3) { animation-delay: 0.15s; }
-        .stat-card:nth-child(4) { animation-delay: 0.20s; }
-
-        /* responsive */
-        @media (max-width: 900px) {
-            .stats-grid { grid-template-columns: repeat(2, 1fr); }
-            .bottom-grid { grid-template-columns: 1fr; }
-            .charts-row { grid-template-columns: 1fr; }
-            .navbar-brand span { display: none; }
-        }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>EduMetrics — Student Analytics</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+<style>
+/* ═══════════════════════════════════════════════
+   TOKENS & THEME
+═══════════════════════════════════════════════ */
+:root {
+  --accent:   #6366f1;
+  --accent-h: #4f46e5;
+  --accent-s: #818cf8;
+  --cyan:     #22d3ee;
+  --green:    #10b981;
+  --amber:    #f59e0b;
+  --red:      #f43f5e;
+  --purple:   #a78bfa;
+
+  --font: 'Sora', sans-serif;
+  --mono: 'JetBrains Mono', monospace;
+  --r:    10px;
+  --r-lg: 14px;
+}
+
+[data-theme="dark"] {
+  --bg:       #09090f;
+  --bg2:      #0f0f1a;
+  --surface:  #13131f;
+  --surface2: #1a1a2e;
+  --surface3: #202038;
+  --border:   #ffffff0f;
+  --border2:  #ffffff18;
+  --text:     #f1f1ff;
+  --text2:    #a0a0c0;
+  --text3:    #5a5a80;
+  --glow:     rgba(99,102,241,0.18);
+}
+
+[data-theme="light"] {
+  --bg:       #f4f4fc;
+  --bg2:      #ebebf8;
+  --surface:  #ffffff;
+  --surface2: #f0f0fa;
+  --surface3: #e8e8f5;
+  --border:   #e0e0f0;
+  --border2:  #cacae8;
+  --text:     #1a1a2e;
+  --text2:    #4a4a6a;
+  --text3:    #9090b0;
+  --glow:     rgba(99,102,241,0.10);
+}
+
+/* ═══════════════════════════════════════════════
+   RESET & BASE
+═══════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body {
+  height: 100%;
+  overflow: hidden;
+  font-family: var(--font);
+  font-size: 13px;
+  color: var(--text);
+  background: var(--bg);
+  transition: background .3s, color .3s;
+}
+
+/* ═══════════════════════════════════════════════
+   APP SHELL  –  fixed grid
+═══════════════════════════════════════════════ */
+.app {
+  display: grid;
+  grid-template-rows: 52px 1fr;
+  grid-template-columns: 220px 1fr;
+  height: 100vh;
+  width: 100vw;
+}
+
+/* ─── TOPBAR ─── */
+.topbar {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 20px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  z-index: 50;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  text-decoration: none;
+  flex-shrink: 0;
+  width: 180px;
+}
+
+.logo-mark {
+  width: 30px; height: 30px;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  flex-shrink: 0;
+}
+
+.logo-text { letter-spacing: -.02em; }
+.logo-text span { color: var(--accent-s); }
+
+.vr { width: 1px; height: 22px; background: var(--border2); flex-shrink: 0; }
+.spacer { flex: 1; }
+
+/* upload form in topbar */
+.top-upload {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.file-pick {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  height: 30px;
+  padding: 0 12px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 12px;
+  font-family: var(--font);
+  color: var(--text2);
+  transition: .15s;
+}
+.file-pick:hover { border-color: var(--accent); color: var(--accent-s); }
+
+.chosen-name {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--green);
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.last-lbl {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text3);
+  white-space: nowrap;
+}
+.last-lbl b { color: var(--cyan); font-weight: 500; }
+
+/* theme toggle */
+.theme-toggle {
+  width: 36px; height: 36px;
+  border-radius: 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  transition: border-color .2s, color .2s, background .2s, box-shadow .2s;
+  flex-shrink: 0;
+  position: relative;
+  overflow: hidden;
+}
+.theme-toggle::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, var(--accent), var(--cyan));
+  opacity: 0;
+  transition: opacity .2s;
+  border-radius: inherit;
+}
+.theme-toggle:hover { border-color: var(--accent); color: #fff; box-shadow: 0 0 12px var(--glow); }
+.theme-toggle:hover::before { opacity: 1; }
+.theme-toggle i { position: relative; z-index: 1; transition: transform .3s; }
+.theme-toggle:hover i { transform: rotate(20deg) scale(1.1); }
+@keyframes spinOnce { 0%{transform:rotate(0deg) scale(1)} 40%{transform:rotate(200deg) scale(1.3)} 100%{transform:rotate(360deg) scale(1)} }
+.theme-toggle.spin i { animation: spinOnce .4s cubic-bezier(.4,0,.2,1) forwards; }
+
+/* btn styles */
+.btn {
+  display: inline-flex; align-items: center; gap: 6px;
+  height: 30px; padding: 0 14px;
+  border-radius: 8px; border: none;
+  font-size: 12px; font-weight: 600;
+  font-family: var(--font);
+  cursor: pointer; transition: .15s;
+  white-space: nowrap;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: var(--accent-h); }
+.btn-ghost { background: var(--surface2); color: var(--text2); border: 1px solid var(--border2); }
+.btn-ghost:hover { color: var(--text); border-color: var(--accent); }
+.btn-danger { background: transparent; color: #f87171; border: 1px solid #f8717130; }
+.btn-danger:hover { background: #f4433610; border-color: var(--red); }
+
+/* ─── SIDEBAR ─── */
+.sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  padding: 16px 10px;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.sidebar-section {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  padding: 10px 10px 6px;
+  margin-top: 6px;
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text2);
+  transition: .15s;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+.nav-item i { width: 16px; text-align: center; font-size: 13px; opacity: .7; }
+.nav-item:hover { background: var(--surface2); color: var(--text); }
+.nav-item.active {
+  background: var(--glow);
+  color: var(--accent-s);
+  border-color: var(--accent)30;
+}
+.nav-item.active i { opacity: 1; }
+
+.sidebar-footer {
+  margin-top: auto;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+/* ─── MAIN PANEL ─── */
+.main {
+  overflow: hidden;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* Tab pages */
+.tab-page {
+  display: none;
+  height: 100%;
+  flex-direction: column;
+  padding: 18px 22px;
+  gap: 14px;
+  overflow: hidden;
+}
+.tab-page.active { display: flex; }
+
+/* Page header */
+.page-hd {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+.page-hd h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -.03em;
+}
+.page-hd p { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+/* ═══════════════════════════════════════════════
+   TAB: DASHBOARD
+═══════════════════════════════════════════════ */
+/* stat cards row */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 16px 18px;
+  position: relative;
+  overflow: hidden;
+  transition: border-color .2s, transform .2s;
+}
+.stat-card:hover { border-color: var(--border2); transform: translateY(-1px); }
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity .2s;
+  border-radius: inherit;
+}
+.stat-card:hover::before { opacity: 1; }
+
+.sc-accent  { --sc: var(--accent);  }
+.sc-cyan    { --sc: var(--cyan);    }
+.sc-green   { --sc: var(--green);   }
+.sc-amber   { --sc: var(--amber);   }
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--sc), transparent);
+}
+
+.stat-icon {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  margin-bottom: 12px;
+  background: color-mix(in srgb, var(--sc) 12%, transparent);
+  color: var(--sc);
+}
+
+.stat-lbl { font-size: 10.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); margin-bottom: 3px; }
+.stat-val { font-size: 22px; font-weight: 700; letter-spacing: -.03em; color: var(--sc); line-height: 1.1; margin-bottom: 3px; }
+.stat-sub { font-size: 11px; color: var(--text3); }
+
+/* main content grid */
+.dash-grid {
+  display: grid;
+  grid-template-columns: 260px 1fr 240px;
+  gap: 12px;
+  flex: 1;
+  min-height: 0;
+}
+
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.panel-head {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-size: 12.5px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+.panel-title i { font-size: 12px; color: var(--text3); }
+
+.panel-body {
+  padding: 12px 14px;
+  flex: 1;
+  overflow-y: auto;
+}
+.panel-body::-webkit-scrollbar { width: 3px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 3px; }
+
+/* top 5 list */
+.rank-list { list-style: none; display: flex; flex-direction: column; gap: 5px; }
+
+.rank-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 7px 9px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid transparent;
+  transition: .15s;
+}
+.rank-item:hover { border-color: var(--border2); }
+
+.rnum {
+  width: 20px; height: 20px;
+  border-radius: 6px;
+  display: grid;
+  place-items: center;
+  font-size: 10.5px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+.r1 { background: #f59e0b20; color: var(--amber); }
+.r2 { background: #94a3b820; color: #94a3b8; }
+.r3 { background: #f97316, color; background: #f9731620; color: #fb923c; }
+.r_ { background: var(--border); color: var(--text3); }
+
+.rname { font-size: 12.5px; font-weight: 500; flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.rscore {
+  font-family: var(--mono); font-size: 11px; font-weight: 600;
+  color: var(--green);
+  background: color-mix(in srgb, var(--green) 12%, transparent);
+  padding: 2px 7px;
+  border-radius: 5px;
+}
+
+/* grade bars */
+.gbar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.gbar-row:last-child { margin: 0; }
+.gbar-lbl { font-size: 11px; font-weight: 700; width: 14px; }
+.gbar-track { flex: 1; height: 5px; background: var(--surface3); border-radius: 3px; overflow: hidden; }
+.gbar-fill  { height: 100%; border-radius: 3px; transition: width .6s cubic-bezier(.4,0,.2,1); }
+.gbar-pct  { font-family: var(--mono); font-size: 10.5px; color: var(--text3); width: 32px; text-align: right; }
+
+/* ─── STUDENT TABLE (scrollable) ─── */
+.tbl-wrap {
+  overflow-y: auto;
+  flex: 1;
+  min-height: 0;
+}
+.tbl-wrap::-webkit-scrollbar { width: 4px; }
+.tbl-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 4px; }
+
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table thead { position: sticky; top: 0; z-index: 2; background: var(--surface); }
+.data-table th {
+  font-size: 10.5px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3);
+  padding: 9px 12px; text-align: left;
+  border-bottom: 1px solid var(--border);
+  white-space: nowrap;
+}
+.data-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border);
+  font-size: 12.5px;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+.data-table tbody tr:hover td { background: var(--surface2); }
+.data-table tbody tr:last-child td { border: none; }
+
+.av-cell { display: flex; align-items: center; gap: 8px; }
+.av {
+  width: 26px; height: 26px; border-radius: 7px;
+  display: grid; place-items: center;
+  font-size: 11px; font-weight: 700; flex-shrink: 0;
+}
+
+.sh { font-family: var(--mono); font-size: 12px; color: var(--green); font-weight: 500; }
+.sm { font-family: var(--mono); font-size: 12px; color: var(--amber); font-weight: 500; }
+.sl { font-family: var(--mono); font-size: 12px; color: var(--red);   font-weight: 500; }
+
+.avg-cell { display: flex; align-items: center; gap: 6px; min-width: 90px; }
+.avg-track { flex: 1; height: 3px; background: var(--surface3); border-radius: 2px; overflow: hidden; }
+.avg-bar-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--cyan)); border-radius: 2px; }
+.avg-num { font-family: var(--mono); font-size: 11px; color: var(--text3); min-width: 32px; }
+
+.gp {
+  display: inline-grid; place-items: center;
+  width: 22px; height: 22px; border-radius: 6px;
+  font-size: 11px; font-weight: 700;
+}
+.gA { background: color-mix(in srgb, var(--green)  15%, transparent); color: var(--green); }
+.gB { background: color-mix(in srgb, var(--accent) 15%, transparent); color: var(--accent-s); }
+.gC { background: color-mix(in srgb, var(--amber)  15%, transparent); color: var(--amber); }
+.gD { background: color-mix(in srgb, var(--red)    15%, transparent); color: var(--red); }
+
+/* search input */
+.search-wrap {
+  display: flex; align-items: center; gap: 6px;
+  height: 28px; padding: 0 10px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  border-radius: 7px;
+}
+.search-wrap i { font-size: 11px; color: var(--text3); }
+.search-wrap input {
+  background: none; border: none; outline: none;
+  font-family: var(--font); font-size: 12px; color: var(--text);
+  width: 130px;
+}
+.search-wrap input::placeholder { color: var(--text3); }
+
+/* right column charts */
+.chart-stack { display: flex; flex-direction: column; gap: 12px; overflow: hidden; }
+.chart-block {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 12px 14px;
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+}
+.chart-block img { width: 100%; border-radius: 6px; flex: 1; object-fit: contain; min-height: 0; }
+.chart-ph {
+  flex: 1;
+  background: var(--surface2);
+  border: 1px dashed var(--border2);
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  color: var(--text3);
+  font-size: 11px;
+  font-weight: 500;
+  min-height: 80px;
+}
+.chart-ph i { font-size: 22px; opacity: .3; }
+
+.ch-title {
+  font-size: 11px; font-weight: 600; color: var(--text2);
+  display: flex; align-items: center; gap: 6px;
+  margin-bottom: 8px; flex-shrink: 0;
+}
+.ch-title i { font-size: 11px; }
+
+/* ═══════════════════════════════════════════════
+   TAB: HISTORY
+═══════════════════════════════════════════════ */
+.history-layout {
+  display: grid;
+  grid-template-columns: 1fr 400px;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.full-panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.hist-table { width: 100%; border-collapse: collapse; }
+.hist-table thead { position: sticky; top: 0; z-index: 1; background: var(--surface); }
+.hist-table th {
+  font-size: 10.5px; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--text3);
+  padding: 10px 16px; text-align: left;
+  border-bottom: 1px solid var(--border);
+}
+.hist-table td {
+  padding: 11px 16px; font-size: 12.5px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text2);
+}
+.hist-table tbody tr:hover td { background: var(--surface2); }
+.hist-table tbody tr:last-child td { border: none; }
+.hist-table td.mono { font-family: var(--mono); font-size: 11.5px; color: var(--cyan); }
+.hist-table td.id-col { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+.hist-table td.date-col { font-family: var(--mono); font-size: 11px; color: var(--text3); }
+
+/* ═══════════════════════════════════════════════
+   TAB: COMPARE
+═══════════════════════════════════════════════ */
+.compare-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.compare-form-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r-lg);
+  padding: 18px 22px;
+  flex-shrink: 0;
+}
+
+.compare-form-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.sel-group {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.sel-group label { font-size: 11px; font-weight: 600; color: var(--text3); letter-spacing: .06em; text-transform: uppercase; }
+
+.sel {
+  height: 32px; padding: 0 12px;
+  background: var(--surface2); border: 1px solid var(--border2); border-radius: 8px;
+  color: var(--text); font-family: var(--font); font-size: 12.5px; outline: none;
+  min-width: 200px;
+}
+.sel:focus { border-color: var(--accent); }
+
+.vs-badge {
+  font-size: 10px; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--text3);
+  background: var(--surface3); border: 1px solid var(--border2);
+  padding: 4px 10px; border-radius: 20px;
+  margin-top: 18px;
+}
+
+.compare-result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+
+.diff-list { list-style: none; display: flex; flex-direction: column; gap: 6px; }
+.diff-item {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  background: var(--surface2); border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.diff-subj { font-size: 12.5px; font-weight: 500; }
+.diff-up   { font-family: var(--mono); font-size: 12px; color: var(--green); font-weight: 600; }
+.diff-dn   { font-family: var(--mono); font-size: 12px; color: var(--red);   font-weight: 600; }
+.diff-zero { font-family: var(--mono); font-size: 12px; color: var(--text3); }
+
+.err-msg { color: var(--red); font-size: 13px; padding: 10px 0; }
+
+/* ═══════════════════════════════════════════════
+   ERROR BANNER
+═══════════════════════════════════════════════ */
+.err-bar {
+  background: color-mix(in srgb, var(--red) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--red) 30%, transparent);
+  border-radius: 8px;
+  padding: 8px 14px;
+  font-size: 12.5px;
+  color: #fca5a5;
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   TOAST
+═══════════════════════════════════════════════ */
+.toast {
+  position: fixed;
+  bottom: 18px; right: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-left: 3px solid var(--green);
+  padding: 10px 16px;
+  border-radius: var(--r);
+  font-size: 12.5px; font-weight: 500; color: var(--text);
+  display: none; z-index: 999;
+  box-shadow: 0 8px 24px rgba(0,0,0,.35);
+  animation: toastIn .2s ease;
+}
+@keyframes toastIn { from { opacity:0; transform:translateY(8px) } to { opacity:1; transform:none } }
+
+/* ═══════════════════════════════════════════════
+   SCROLLBARS GLOBAL
+═══════════════════════════════════════════════ */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border2) transparent;
+}
+
+/* ═══════════════════════════════════════════════
+   BADGE / TAG
+═══════════════════════════════════════════════ */
+.badge {
+  font-size: 10px; font-weight: 600; letter-spacing: .06em;
+  padding: 2px 8px; border-radius: 20px;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent-s);
+}
+
+/* ═══════════════════════════════════════════════
+   DIVIDER
+═══════════════════════════════════════════════ */
+.divider {
+  height: 1px;
+  background: var(--border);
+  flex-shrink: 0;
+}
+
+/* ═══════════════════════════════════════════════
+   ANIMATION ENTRANCE
+═══════════════════════════════════════════════ */
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(10px) }
+  to   { opacity:1; transform:none }
+}
+.stat-card { animation: fadeUp .35s ease both; }
+.stat-card:nth-child(1){animation-delay:.04s}
+.stat-card:nth-child(2){animation-delay:.08s}
+.stat-card:nth-child(3){animation-delay:.12s}
+.stat-card:nth-child(4){animation-delay:.16s}
+
+/* ═══════════════════════════════════════════════
+   EMPTY STATE
+═══════════════════════════════════════════════ */
+.empty-state {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 8px; padding: 40px 20px;
+  color: var(--text3); font-size: 12.5px;
+}
+.empty-state i { font-size: 28px; opacity: .3; }
+
+/* compact tag in topbar */
+.nav-tag {
+  font-size: 10px; font-weight: 600;
+  padding: 2px 8px; border-radius: 20px;
+  background: color-mix(in srgb, var(--accent) 15%, transparent);
+  color: var(--accent-s);
+  letter-spacing: .06em;
+}
+
+/* ═══════════════════════════════════════════════
+   CHART LIGHTBOX
+═══════════════════════════════════════════════ */
+.lightbox-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0,0,0,.65);
+  backdrop-filter: blur(6px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s ease;
+}
+.lightbox-overlay.open {
+  opacity: 1;
+  pointer-events: all;
+}
+
+.lightbox-box {
+  background: var(--surface);
+  border: 1px solid var(--border2);
+  border-radius: 16px;
+  width: min(80vw, 920px);
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  box-shadow: 0 32px 80px rgba(0,0,0,.5);
+  transform: scale(.88) translateY(30px);
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1), opacity .3s ease;
+  opacity: 0;
+}
+.lightbox-overlay.open .lightbox-box {
+  transform: scale(1) translateY(0);
+  opacity: 1;
+}
+/* closing animation */
+.lightbox-overlay.closing .lightbox-box {
+  transform: scale(.88) translateY(30px);
+  opacity: 0;
+}
+.lightbox-overlay.closing {
+  opacity: 0;
+}
+
+.lightbox-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.lightbox-title {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text);
+}
+.lightbox-close {
+  width: 32px; height: 32px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border2);
+  color: var(--text2);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  font-size: 14px;
+  transition: .15s;
+}
+.lightbox-close:hover { background: var(--red); color: #fff; border-color: var(--red); }
+
+.lightbox-body {
+  flex: 1;
+  overflow: auto;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.lightbox-body img {
+  max-width: 100%;
+  max-height: calc(85vh - 100px);
+  border-radius: 10px;
+  object-fit: contain;
+  border: 1px solid var(--border);
+}
+
+/* chart-block hover ring */
+.chart-block[style*="cursor:pointer"]:hover {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--accent) 20%, transparent);
+}
+</style>
 </head>
 <body>
 
-<!-- ══════════════════════════════
-     STICKY NAVBAR WITH UPLOAD
-══════════════════════════════ -->
-<nav class="navbar">
+<div class="app">
 
-    <a class="navbar-brand" href="#">
-        <div class="icon-wrap">📊</div>
-        <span>Student Analytics</span>
+  <!-- ══════════════════════════════════════════
+       TOPBAR
+  ══════════════════════════════════════════ -->
+  <header class="topbar">
+    <a class="logo" href="#">
+      <div class="logo-mark">📊</div>
+      <span class="logo-text">Edu<span>Metrics</span></span>
     </a>
 
-    {% if error %}
-<div style="background:#ffe0e0; padding:10px; border-radius:8px; margin-bottom:10px;">
-    {{ error }}
-</div>
-{% endif %}
+    <div class="vr"></div>
 
-<p style="font-size:12px; color:gray;  color: yellow;">
-    Last file: {{ last_file }}
-</p>
+    <!-- Upload form sits permanently in topbar -->
+    <form class="top-upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+      {% csrf_token %}
+      <div class="file-pick" id="pickBtn">
+        <i class="fa fa-file-csv" style="color:var(--cyan);font-size:11px"></i>
+        <span id="fileLabel">Choose CSV…</span>
+      </div>
+      <input type="file" name="file" id="csvFile" accept=".csv" style="display:none" onchange="handleFile(this)">
+      <span class="chosen-name" id="chosenName"></span>
+      <button type="submit" class="btn btn-primary"><i class="fa fa-upload"></i> Upload</button>
+    </form>
 
-    {% comment %} <p class="text-sm" style="margin-right: 20px; font-weight: 700; color: yellow;">
-    Last uploaded: {{ last_file }}
-</p> {% endcomment %}
+    <div class="spacer"></div>
 
-    <form class="navbar-upload" method="POST" enctype="multipart/form-data" id="uploadForm">
-        {% csrf_token %}
- 
-        <label class="upload-label" for="csvFile">
-            <i class="fa fa-file-csv" style="color: var(--yellow);"></i>
-            <span id="fileLabel">Choose CSV file...</span>
-        </label>
-        <input type="file" name="file" id="csvFile" accept=".csv" style="display:none"
-               onchange="handleFile(this)">
-
-        <span class="file-name-display" id="fileNameDisplay"></span>
-
-        <button type="submit" class="btn-upload">
-            <i class="fa fa-upload"></i>
-            Upload
-        </button>
-</form>
-
-
-<form action="/reset/" method="POST" style="display:inline;">
-    {% csrf_token %}
-    <button type="submit" style="background:#ff4d4d; color:white; padding:6px 12px; border:none; border-radius:6px;">
-        Reset Data
-    </button>
-</form>
-
-
-
-
-
-        <form action="/logout/" method="POST" style="display:inline">
-            {% csrf_token %}
-            <button type="submit" class="btn-logout">
-                <i class="fa fa-sign-out-alt"></i>
-                Logout
-            </button>
-        </form>
-   
-</nav>
-
-
-
-<!-- ══════════════════════════════
-     MAIN CONTENT
-══════════════════════════════ -->
-<div class="main">
-
-    <div style="background:#fff; padding:15px; border-radius:10px; margin-bottom:20px;">
-    <h3>📂 Upload History</h3>
-
-    <table style="width:100%; font-size:14px;">
-        <tr style="text-align:left;">
-            <th>ID</th>
-            <th>File</th>
-            <th>Time</th>
-            <th>Action</th>
-        </tr>
-
-        {% for file in files %}
-        <tr>
-            <td>{{ file.id }}</td>
-            <td>{{ file.file.name }}</td>
-            <td>{{ file.uploaded_at }}</td>
-            <td>
-                <form action="/delete/{{ file.id }}/" method="POST" style="display:inline;">
-                    {% csrf_token %}
-                    <button style="background:red; color:white; border:none; padding:5px 10px; border-radius:5px;">
-                        Delete
-                    </button>
-                </form>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
-</div>
-
-<h3>🔄 Compare Datasets</h3>
-
-<form method="GET" style="margin-bottom:15px;">
-
-    <select name="file1">
-        {% for file in files %}
-        <option value="{{ file.id }}"
-            {% if forloop.first %}selected{% endif %}>
-            {{ file.file.name }}
-        </option>
-        {% endfor %}
-    </select>
-
-    <select name="file2">
-        {% for file in files %}
-        <option value="{{ file.id }}"
-            {% if forloop.counter == 2 %}selected{% endif %}>
-            {{ file.file.name }}
-        </option>
-        {% endfor %}
-    </select>
-
-    <button type="submit" name="compare">Compare</button>
-</form>
-
-{% if compare_data %}
-
-    {% if compare_data.error %}
-        <p style="color:red;">{{ compare_data.error }}</p>
-    {% else %}
-
-        <h4>📊 Comparison</h4>
-        <img src="/static/{{ compare_data.chart }}" width="500">
-
-        <ul>
-        {% for subject, value in compare_data.difference.items %}
-            <li>
-                {{ subject }} :
-                {% if value > 0 %}
-                    <span style="color:green;">⬆ +{{ value|floatformat:2 }}</span>
-                {% elif value < 0 %}
-                    <span style="color:red;">⬇ {{ value|floatformat:2 }}</span>
-                {% else %}
-                    0
-                {% endif %}
-            </li>
-        {% endfor %}
-        </ul>
-
+    {% if last_file %}
+    <span class="last-lbl">Last: <b>{{ last_file }}</b></span>
     {% endif %}
 
-{% endif %}
+    {% if error %}
+    <span style="font-size:11.5px;color:var(--red);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+      <i class="fa fa-triangle-exclamation"></i> {{ error }}
+    </span>
+    {% endif %}
 
-    <!-- STATS ROW -->
-    <p class="section-title">📌 Overview</p>
-    <div class="stats-grid">
+    <button class="theme-toggle" id="themeBtn" title="Toggle theme"><i class="fa fa-moon" id="themeIcon"></i></button>
 
-        <div class="stat-card card-yellow">
-            <div class="corner-deco" style="background:var(--yellow)"></div>
-            <span class="card-icon">🏆</span>
-            <div class="card-label">Top Performer</div>
-            <div class="card-value val-yellow">{{ top_student.Name }}</div>
-            <div class="card-sub">Avg Score: {{ top_student.Average }}</div>
-        </div>
+    <form action="/reset/" method="POST" style="display:inline">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-ghost"><i class="fa fa-rotate-left"></i> Reset</button>
+    </form>
 
-        <div class="stat-card card-blue">
-            <div class="corner-deco" style="background:var(--blue)"></div>
-            <span class="card-icon">🤖</span>
-            <div class="card-label">AI Predicted Topper</div>
-            <div class="card-value val-blue">{{ predicted_topper.Name }}</div>
-            <div class="card-sub">Predicted: {{ predicted_topper.Predicted_Average }}</div>
-        </div>
+    <form action="/logout/" method="POST" style="display:inline">
+      {% csrf_token %}
+      <button type="submit" class="btn btn-danger"><i class="fa fa-sign-out-alt"></i> Logout</button>
+    </form>
+  </header>
 
-        <div class="stat-card card-green">
-            <div class="corner-deco" style="background:var(--green)"></div>
-            <span class="card-icon">🎯</span>
-            <div class="card-label">Model Accuracy</div>
-            <div class="card-value val-green">{{ accuracy }}</div>
-            <div class="card-sub">R² Score</div>
-        </div>
+  <!-- ══════════════════════════════════════════
+       SIDEBAR NAV
+  ══════════════════════════════════════════ -->
+  <aside class="sidebar">
+    <div class="sidebar-section">Main</div>
 
-        <div class="stat-card card-purple">
-            <div class="corner-deco" style="background:var(--purple)"></div>
-            <span class="card-icon">👥</span>
-            <div class="card-label">Total Students</div>
-            <div class="card-value val-purple">{{ students|length }}</div>
-            <div class="card-sub">Enrolled</div>
-        </div>
-
+    <div class="nav-item active" onclick="showTab('dashboard',this)">
+      <i class="fa fa-gauge-high"></i> Dashboard
+    </div>
+    <div class="nav-item" onclick="showTab('history',this)">
+      <i class="fa fa-clock-rotate-left"></i> File History
+      {% if files %}<span class="badge" style="margin-left:auto">{{ files|length }}</span>{% endif %}
+    </div>
+    <div class="nav-item" onclick="showTab('compare',this)">
+      <i class="fa fa-code-compare"></i> Compare
     </div>
 
-    <!-- BOTTOM GRID -->
-    <p class="section-title">📋 Details</p>
-    <div class="bottom-grid">
+    <div class="sidebar-section">Info</div>
 
-        <!-- LEFT COLUMN -->
-        <div class="left-col">
+    <div class="nav-item" style="cursor:default;pointer-events:none;opacity:.5">
+      <i class="fa fa-users"></i> {{ students|length }} Students
+    </div>
+    <div class="nav-item" style="cursor:default;pointer-events:none;opacity:.5">
+      <i class="fa fa-bullseye"></i> R² {{ accuracy|default:"—" }}
+    </div>
 
-            <!-- TOP 5 -->
-            <div class="card top5-card">
-                <h2>🏆 Top 5 Students <span class="sticker">This Week</span></h2>
-                <ul class="top5-list">
-                    {% for student in top_5 %}
-                    <li class="top5-item">
-                        <div class="rank-badge rank-{{ forloop.counter }}">{{ forloop.counter }}</div>
-                        <span class="top5-name">{{ student.Name }}</span>
-                        <span class="score-pill">{{ student.Average }}</span>
-                    </li>
-                    {% endfor %}
-                </ul>
+    <div class="sidebar-footer">
+      <div class="nav-item" style="cursor:default;pointer-events:none;font-size:11px;color:var(--text3)">
+        <i class="fa fa-code"></i> EduMetrics v2.0
+      </div>
+    </div>
+  </aside>
+
+  <!-- ══════════════════════════════════════════
+       MAIN PANEL
+  ══════════════════════════════════════════ -->
+  <main class="main">
+
+    <!-- ─────── TAB: DASHBOARD ─────── -->
+    <section class="tab-page active" id="tab-dashboard">
+
+      <!-- Stat cards -->
+      <div class="stats-row">
+
+        <div class="stat-card sc-accent">
+          <div class="stat-icon"><i class="fa fa-trophy"></i></div>
+          <div class="stat-lbl">Top Performer</div>
+          <div class="stat-val">{{ top_student.Name|default:"—" }}</div>
+          <div class="stat-sub">Avg {{ top_student.Average|default:"—" }}</div>
+        </div>
+
+        <div class="stat-card sc-cyan">
+          <div class="stat-icon"><i class="fa fa-robot"></i></div>
+          <div class="stat-lbl">AI Predicted</div>
+          <div class="stat-val">{{ predicted_topper.Name|default:"—" }}</div>
+          <div class="stat-sub">{{ predicted_topper.Predicted_Average|default:"—" }}</div>
+        </div>
+
+        <div class="stat-card sc-green">
+          <div class="stat-icon"><i class="fa fa-bullseye"></i></div>
+          <div class="stat-lbl">Model Accuracy</div>
+          <div class="stat-val">{{ accuracy|default:"—" }}</div>
+          <div class="stat-sub">R² Score</div>
+        </div>
+
+        <div class="stat-card sc-amber">
+          <div class="stat-icon"><i class="fa fa-users"></i></div>
+          <div class="stat-lbl">Total Students</div>
+          <div class="stat-val">{{ students|length|default:"0" }}</div>
+          <div class="stat-sub">Enrolled session</div>
+        </div>
+
+      </div>
+
+      <!-- 3-column grid -->
+      <div class="dash-grid">
+
+        <!-- LEFT: Top 5 + Grade split -->
+        <div style="display:flex;flex-direction:column;gap:12px;min-height:0;">
+
+          <div class="panel" style="flex:1;min-height:0;">
+            <div class="panel-head">
+              <div class="panel-title"><i class="fa fa-medal"></i> Top 5 Students</div>
             </div>
-
-            <!-- SUBJECT BAR CHART (Inline demo) -->
-            <div class="card chart-mini">
-                <h2>📊 Subject Avg</h2>
-                {% if bar_chart %}
-                <img src="/static/{{ bar_chart }}" alt="Subject Chart">
-                {% else %}
-                <div class="bar-chart-inline" id="inlineBar">
-                    <div class="bar-group">
-                        <div class="bar" style="height:68px;background:var(--orange);"></div>
-                        <div class="bar-label">Maths</div>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height:82px;background:var(--blue);"></div>
-                        <div class="bar-label">Science</div>
-                    </div>
-                    <div class="bar-group">
-                        <div class="bar" style="height:55px;background:var(--purple);"></div>
-                        <div class="bar-label">English</div>
-                    </div>
-                </div>
-                {% endif %}
+            <div class="panel-body">
+              <ul class="rank-list">
+                {% for student in top_5 %}
+                <li class="rank-item">
+                  <div class="rnum {% if forloop.counter == 1 %}r1{% elif forloop.counter == 2 %}r2{% elif forloop.counter == 3 %}r3{% else %}r_{% endif %}">{{ forloop.counter }}</div>
+                  <span class="rname">{{ student.Name }}</span>
+                  <span class="rscore">{{ student.Average }}</span>
+                </li>
+                {% empty %}
+                <div class="empty-state"><i class="fa fa-inbox"></i>Upload CSV to see rankings</div>
+                {% endfor %}
+              </ul>
             </div>
+          </div>
 
-            <!-- GRADE PIE -->
-            <div class="card chart-mini">
-                <h2>📈 Grade Split</h2>
-                {% if pie_chart %}
-                <img src="/static/{{ pie_chart }}" alt="Grade Chart">
-                {% else %}
-                <div style="display:flex;flex-direction:column;gap:8px;padding-top:6px">
-                    <div style="display:flex;align-items:center;gap:10px">
-                        <div style="width:12px;height:12px;border-radius:4px;background:var(--green);border:2px solid var(--dark)"></div>
-                        <div style="flex:1;height:8px;border-radius:4px;background:#eee;overflow:hidden">
-                            <div style="width:42%;height:100%;background:var(--green);border-radius:4px"></div>
-                        </div>
-                        <span style="font-size:12px;font-weight:900;color:var(--green)">A — 42%</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px">
-                        <div style="width:12px;height:12px;border-radius:4px;background:var(--blue);border:2px solid var(--dark)"></div>
-                        <div style="flex:1;height:8px;border-radius:4px;background:#eee;overflow:hidden">
-                            <div style="width:30%;height:100%;background:var(--blue);border-radius:4px"></div>
-                        </div>
-                        <span style="font-size:12px;font-weight:900;color:var(--blue)">B — 30%</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px">
-                        <div style="width:12px;height:12px;border-radius:4px;background:var(--yellow);border:2px solid var(--dark)"></div>
-                        <div style="flex:1;height:8px;border-radius:4px;background:#eee;overflow:hidden">
-                            <div style="width:20%;height:100%;background:var(--yellow);border-radius:4px"></div>
-                        </div>
-                        <span style="font-size:12px;font-weight:900;color:var(--orange)">C — 20%</span>
-                    </div>
-                    <div style="display:flex;align-items:center;gap:10px">
-                        <div style="width:12px;height:12px;border-radius:4px;background:var(--red);border:2px solid var(--dark)"></div>
-                        <div style="flex:1;height:8px;border-radius:4px;background:#eee;overflow:hidden">
-                            <div style="width:8%;height:100%;background:var(--red);border-radius:4px"></div>
-                        </div>
-                        <span style="font-size:12px;font-weight:900;color:var(--red)">D — 8%</span>
-                    </div>
-                </div>
-                {% endif %}
+          <div class="panel" style="flex-shrink:0;">
+            <div class="panel-head">
+              <div class="panel-title"><i class="fa fa-chart-pie"></i> Grade Distribution</div>
             </div>
+            <div class="panel-body">
+              {% if pie_chart %}
+              <img src="/static/{{ pie_chart }}" alt="Grade Chart" style="width:100%;border-radius:6px;max-height:100px;object-fit:contain;">
+              {% else %}
+              <div class="gbar-row"><span class="gbar-lbl" style="color:var(--green)">A</span><div class="gbar-track"><div class="gbar-fill" style="width:42%;background:var(--green)"></div></div><span class="gbar-pct">42%</span></div>
+              <div class="gbar-row"><span class="gbar-lbl" style="color:var(--accent-s)">B</span><div class="gbar-track"><div class="gbar-fill" style="width:30%;background:var(--accent)"></div></div><span class="gbar-pct">30%</span></div>
+              <div class="gbar-row"><span class="gbar-lbl" style="color:var(--amber)">C</span><div class="gbar-track"><div class="gbar-fill" style="width:20%;background:var(--amber)"></div></div><span class="gbar-pct">20%</span></div>
+              <div class="gbar-row" style="margin:0"><span class="gbar-lbl" style="color:var(--red)">D</span><div class="gbar-track"><div class="gbar-fill" style="width:8%;background:var(--red)"></div></div><span class="gbar-pct">8%</span></div>
+              {% endif %}
+            </div>
+          </div>
 
         </div>
 
-        <!-- RIGHT COLUMN: TABLE -->
-        <div class="card table-card">
-            <div class="table-card-header">
-                <h2>📋 Student Data</h2>
-                <div class="search-box">
-                    <i class="fa fa-search" style="opacity:0.5"></i>
-                    <input type="text" id="searchInput" placeholder="Search student..." oninput="filterTable()">
-                </div>
+        <!-- CENTER: Student Data Table -->
+        <div class="panel">
+          <div class="panel-head">
+            <div class="panel-title"><i class="fa fa-table-cells"></i> Student Data</div>
+            <div class="search-wrap">
+              <i class="fa fa-magnifying-glass"></i>
+              <input type="text" id="searchInput" placeholder="Search student…" oninput="filterTable()">
             </div>
-
-            <table id="studentTable">
-                <thead>
-                    <tr>
-                        <th>Student</th>
-                        <th>Maths</th>
-                        <th>Science</th>
-                        <th>English</th>
-                        <th>Computer</th>
-                        <th>History</th>
-                        <th>Average</th>
-                        <th>Grade</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-
-                    {% for student in students %}
-                    <tr>
-                        <td>
-                            <div class="name-cell">
-                                <div class="avatar" style="background:hsl({{ forloop.counter|add:0 }}00deg 60% 88%)">
-                                    {{ student.Name|slice:":1" }}
-                                </div>
-                                {{ student.Name }}
-                            </div>
-                        </td>
-                        <td class="score-num {% if student.Maths >= 80 %}score-high{% elif student.Maths >= 60 %}score-mid{% else %}score-low{% endif %}">
-                            {{ student.Maths }}
-                        </td>
-                        <td class="score-num {% if student.Science >= 80 %}score-high{% elif student.Science >= 60 %}score-mid{% else %}score-low{% endif %}">
-                            {{ student.Science }}
-                        </td>
-                        <td class="score-num {% if student.English >= 80 %}score-high{% elif student.English >= 60 %}score-mid{% else %}score-low{% endif %}">
-                            {{ student.English }}
-                        </td>
-                        <td class="score-num {% if student.Computer >= 80 %}score-high{% elif student.Computer >= 60 %}score-mid{% else %}score-low{% endif %}">
-                            {{ student.Computer}}
-                        </td>
-                        <td class="score-num {% if student.History >= 80 %}score-high{% elif student.History >= 60 %}score-mid{% else %}score-low{% endif %}">
-                            {{ student.History}}
-                        </td>
-                        <td>
-                            <div class="avg-bar-wrap">
-                                <div class="avg-bar">
-                                    <div class="avg-bar-fill" style="width:{{ student.Average }}%"></div>
-                                </div>
-                                <span class="avg-val">{{ student.Average }}</span>
-                            </div>
-                        </td>
-                        <td>
-                            <span class="grade grade-{{ student.Grade }}">{{ student.Grade }}</span>
-                        </td>
-                    </tr>
-                    {% empty %}
-                   
-                    {% endfor %}
-
-                </tbody>
+          </div>
+          <div class="tbl-wrap">
+            <table class="data-table" id="studentTable">
+              <thead>
+                <tr>
+                  <th>Student</th>
+                  <th>Maths</th>
+                  <th>Science</th>
+                  <th>English</th>
+                  <th>Computer</th>
+                  <th>History</th>
+                  <th>Average</th>
+                  <th>Grade</th>
+                </tr>
+              </thead>
+              <tbody id="tableBody">
+                {% for student in students %}
+                <tr>
+                  <td>
+                    <div class="av-cell">
+                      <div class="av" style="background:hsl({{ forloop.counter0 }}40deg,55%,20%);color:hsl({{ forloop.counter0 }}40deg,70%,65%)">{{ student.Name|slice:":1" }}</div>
+                      {{ student.Name }}
+                    </div>
+                  </td>
+                  <td class="{% if student.Maths >= 80 %}sh{% elif student.Maths >= 60 %}sm{% else %}sl{% endif %}">{{ student.Maths }}</td>
+                  <td class="{% if student.Science >= 80 %}sh{% elif student.Science >= 60 %}sm{% else %}sl{% endif %}">{{ student.Science }}</td>
+                  <td class="{% if student.English >= 80 %}sh{% elif student.English >= 60 %}sm{% else %}sl{% endif %}">{{ student.English }}</td>
+                  <td class="{% if student.Computer >= 80 %}sh{% elif student.Computer >= 60 %}sm{% else %}sl{% endif %}">{{ student.Computer }}</td>
+                  <td class="{% if student.History >= 80 %}sh{% elif student.History >= 60 %}sm{% else %}sl{% endif %}">{{ student.History }}</td>
+                  <td>
+                    <div class="avg-cell">
+                      <div class="avg-track"><div class="avg-bar-fill" style="width:{{ student.Average }}%"></div></div>
+                      <span class="avg-num">{{ student.Average }}</span>
+                    </div>
+                  </td>
+                  <td><span class="gp g{{ student.Grade }}">{{ student.Grade }}</span></td>
+                </tr>
+                {% empty %}
+                <!-- Demo data -->
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#1e3a5f;color:#60a5fa">A</div>Ananya Sharma</div></td>
+                  <td class="sh">98</td><td class="sh">95</td><td class="sh">97</td><td class="sh">96</td><td class="sh">94</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:96%"></div></div><span class="avg-num">96.0</span></div></td>
+                  <td><span class="gp gA">A</span></td>
+                </tr>
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#2d1f5e;color:#a78bfa">R</div>Rohan Gupta</div></td>
+                  <td class="sh">91</td><td class="sh">88</td><td class="sh">94</td><td class="sh">90</td><td class="sh">86</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:90%"></div></div><span class="avg-num">89.8</span></div></td>
+                  <td><span class="gp gA">A</span></td>
+                </tr>
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#0d3326;color:#34d399">P</div>Priya Singh</div></td>
+                  <td class="sh">85</td><td class="sh">89</td><td class="sm">78</td><td class="sh">82</td><td class="sm">75</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:82%"></div></div><span class="avg-num">81.8</span></div></td>
+                  <td><span class="gp gB">B</span></td>
+                </tr>
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#3b2407;color:#fbbf24">A</div>Arjun Verma</div></td>
+                  <td class="sm">74</td><td class="sm">70</td><td class="sm">76</td><td class="sh">80</td><td class="sm">68</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:74%"></div></div><span class="avg-num">73.6</span></div></td>
+                  <td><span class="gp gC">C</span></td>
+                </tr>
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#3b0a0a;color:#f87171">N</div>Neha Joshi</div></td>
+                  <td class="sl">58</td><td class="sm">62</td><td class="sl">54</td><td class="sm">60</td><td class="sl">50</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:57%"></div></div><span class="avg-num">56.8</span></div></td>
+                  <td><span class="gp gD">D</span></td>
+                </tr>
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#0c2d38;color:#22d3ee">K</div>Karan Patel</div></td>
+                  <td class="sh">88</td><td class="sh">92</td><td class="sh">86</td><td class="sm">79</td><td class="sh">83</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:86%"></div></div><span class="avg-num">85.6</span></div></td>
+                  <td><span class="gp gB">B</span></td>
+                </tr>
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#2e0f27;color:#e879f9">S</div>Sana Khan</div></td>
+                  <td class="sm">72</td><td class="sm">68</td><td class="sh">80</td><td class="sm">74</td><td class="sm">70</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:73%"></div></div><span class="avg-num">72.8</span></div></td>
+                  <td><span class="gp gC">C</span></td>
+                </tr>
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#1a2e0a;color:#86efac">M</div>Meera Pillai</div></td>
+                  <td class="sh">93</td><td class="sh">87</td><td class="sh">91</td><td class="sh">88</td><td class="sh">85</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:89%"></div></div><span class="avg-num">88.8</span></div></td>
+                  <td><span class="gp gA">A</span></td>
+                </tr>
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#1e1a3b;color:#c4b5fd">V</div>Vivek Sharma</div></td>
+                  <td class="sh">80</td><td class="sm">75</td><td class="sh">83</td><td class="sh">81</td><td class="sm">77</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:79%"></div></div><span class="avg-num">79.2</span></div></td>
+                  <td><span class="gp gB">B</span></td>
+                </tr>
+                <tr>
+                  <td><div class="av-cell"><div class="av" style="background:#1f1f0a;color:#fde68a">D</div>Divya Nair</div></td>
+                  <td class="sl">55</td><td class="sl">58</td><td class="sm">62</td><td class="sl">50</td><td class="sl">48</td>
+                  <td><div class="avg-cell"><div class="avg-track"><div class="avg-bar-fill" style="width:55%"></div></div><span class="avg-num">54.6</span></div></td>
+                  <td><span class="gp gD">D</span></td>
+                </tr>
+                {% endfor %}
+              </tbody>
             </table>
+          </div>
         </div>
 
-    </div>
+        <!-- RIGHT: Charts column -->
+        <div class="chart-stack">
 
-    <!-- CHARTS ROW -->
-    <p class="section-title" style="margin-top:28px">📉 Analytics</p>
-    <div class="charts-row">
-
-        <div class="card big-chart-card">
-            <h2>📊 Subject Average</h2>
+          <div class="chart-block" onclick="openLightbox('/static/{{ bar_chart }}','Subject Average','bar-block')" id="bar-block" {% if bar_chart %}style="cursor:pointer"{% endif %}>
+            <div class="ch-title"><i class="fa fa-chart-bar" style="color:var(--accent-s)"></i> Subject Avg {% if bar_chart %}<span style="margin-left:auto;font-size:10px;color:var(--text3)"><i class="fa fa-expand"></i> Click to expand</span>{% endif %}</div>
             {% if bar_chart %}
             <img src="/static/{{ bar_chart }}" alt="Bar Chart">
             {% else %}
-            <div class="chart-ph">
-                <i class="fa fa-chart-bar"></i>
-                Upload CSV to see chart
-            </div>
+            <div class="chart-ph"><i class="fa fa-chart-bar"></i>Upload CSV</div>
             {% endif %}
-        </div>
+          </div>
 
-        <div class="card big-chart-card">
-            <h2>🍩 Grade Distribution</h2>
+          <div class="chart-block" onclick="openLightbox('/static/{{ pie_chart }}','Grade Distribution','pie-block')" id="pie-block" {% if pie_chart %}style="cursor:pointer"{% endif %}>
+            <div class="ch-title"><i class="fa fa-chart-pie" style="color:var(--cyan)"></i> Grades {% if pie_chart %}<span style="margin-left:auto;font-size:10px;color:var(--text3)"><i class="fa fa-expand"></i> Click to expand</span>{% endif %}</div>
             {% if pie_chart %}
             <img src="/static/{{ pie_chart }}" alt="Pie Chart">
             {% else %}
-            <div class="chart-ph">
-                <i class="fa fa-chart-pie"></i>
-                Upload CSV to see chart
-            </div>
+            <div class="chart-ph"><i class="fa fa-chart-pie"></i>Upload CSV</div>
             {% endif %}
-        </div>
+          </div>
 
-        <div class="card big-chart-card">
-            <h2>📉 Performance Spread</h2>
+          <div class="chart-block" onclick="openLightbox('/static/{{ hist_chart }}','Performance Distribution','hist-block')" id="hist-block" {% if hist_chart %}style="cursor:pointer"{% endif %}>
+            <div class="ch-title"><i class="fa fa-chart-area" style="color:var(--purple)"></i> Distribution {% if hist_chart %}<span style="margin-left:auto;font-size:10px;color:var(--text3)"><i class="fa fa-expand"></i> Click to expand</span>{% endif %}</div>
             {% if hist_chart %}
             <img src="/static/{{ hist_chart }}" alt="Histogram">
             {% else %}
-            <div class="chart-ph">
-                <i class="fa fa-chart-line"></i>
-                Upload CSV to see chart
-            </div>
+            <div class="chart-ph"><i class="fa fa-chart-line"></i>Upload CSV</div>
             {% endif %}
+          </div>
+
         </div>
 
-    </div>
+      </div>
+    </section>
 
+    <!-- ─────── TAB: HISTORY ─────── -->
+    <section class="tab-page" id="tab-history">
+
+      <div class="page-hd" style="flex-shrink:0">
+        <div>
+          <h1>File History</h1>
+          <p>All uploaded datasets — manage, preview and delete records</p>
+        </div>
+        {% if files %}
+        <span class="badge" style="font-size:12px;padding:4px 12px">{{ files|length }} files</span>
+        {% endif %}
+      </div>
+
+      <div class="history-layout">
+
+        <!-- File records table -->
+        <div class="full-panel">
+          <div class="panel-head">
+            <div class="panel-title"><i class="fa fa-database"></i> Uploaded Files</div>
+          </div>
+          <div class="tbl-wrap">
+            <table class="hist-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>Filename</th>
+                  <th>Uploaded At</th>
+                  <th>Size</th>
+                  <th>Action</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for file in files %}
+                <tr>
+                  <td class="id-col">{{ file.id }}</td>
+                  <td class="mono">{{ file.file.name }}</td>
+                  <td class="date-col">{{ file.uploaded_at }}</td>
+                  <td class="date-col">—</td>
+                  <td>
+                    <form action="/delete/{{ file.id }}/" method="POST" style="display:inline">
+                      {% csrf_token %}
+                      <button type="submit" class="btn btn-danger" style="height:26px;padding:0 10px;font-size:11px">
+                        <i class="fa fa-trash"></i> Delete
+                      </button>
+                    </form>
+                  </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5"><div class="empty-state"><i class="fa fa-inbox"></i>No files uploaded yet. Use the Upload button above.</div></td></tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Info sidebar -->
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="full-panel" style="flex-shrink:0">
+            <div class="panel-head">
+              <div class="panel-title"><i class="fa fa-circle-info"></i> Quick Stats</div>
+            </div>
+            <div class="panel-body" style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+                <span style="font-size:12px;color:var(--text2)">Total Files</span>
+                <span style="font-family:var(--mono);font-size:14px;font-weight:600;color:var(--accent-s)">{{ files|length|default:"0" }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+                <span style="font-size:12px;color:var(--text2)">Last Upload</span>
+                <span style="font-family:var(--mono);font-size:11px;font-weight:500;color:var(--cyan)">{{ last_file|default:"None" }}</span>
+              </div>
+              <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 10px;background:var(--surface2);border-radius:8px;">
+                <span style="font-size:12px;color:var(--text2)">Students Loaded</span>
+                <span style="font-family:var(--mono);font-size:14px;font-weight:600;color:var(--green)">{{ students|length|default:"0" }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="full-panel" style="flex:1">
+            <div class="panel-head">
+              <div class="panel-title"><i class="fa fa-lightbulb"></i> Tips</div>
+            </div>
+            <div class="panel-body" style="display:flex;flex-direction:column;gap:8px;">
+              <div style="padding:10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--accent);">
+                <div style="font-size:11.5px;font-weight:600;margin-bottom:3px">CSV Format</div>
+                <div style="font-size:11px;color:var(--text2);line-height:1.5">Ensure columns: Name, Maths, Science, English, Computer, History</div>
+              </div>
+              <div style="padding:10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--cyan);">
+                <div style="font-size:11.5px;font-weight:600;margin-bottom:3px">Compare Files</div>
+                <div style="font-size:11px;color:var(--text2);line-height:1.5">Upload at least 2 files, then go to Compare tab to see differences</div>
+              </div>
+              <div style="padding:10px;background:var(--surface2);border-radius:8px;border-left:3px solid var(--amber);">
+                <div style="font-size:11.5px;font-weight:600;margin-bottom:3px">Render Deploy</div>
+                <div style="font-size:11px;color:var(--text2);line-height:1.5">Files reset on redeploy — use cloud storage for persistence</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ─────── TAB: COMPARE ─────── -->
+    <section class="tab-page" id="tab-compare">
+
+      <div class="page-hd" style="flex-shrink:0">
+        <div>
+          <h1>Compare Datasets</h1>
+          <p>Select two uploaded files to compare subject-wise performance</p>
+        </div>
+      </div>
+
+      <div class="compare-layout">
+
+        <!-- Compare form -->
+        <div class="compare-form-card">
+          <form method="GET" class="compare-form-row" id="compareForm">
+            <div class="sel-group">
+              <label>Dataset A</label>
+              <select name="file1" class="sel">
+                {% for file in files %}
+                <option value="{{ file.id }}" {% if forloop.first %}selected{% endif %}>{{ file.file.name }}</option>
+                {% empty %}
+                <option>No files yet</option>
+                {% endfor %}
+              </select>
+            </div>
+            <span class="vs-badge">VS</span>
+            <div class="sel-group">
+              <label>Dataset B</label>
+              <select name="file2" class="sel">
+                {% for file in files %}
+                <option value="{{ file.id }}" {% if forloop.counter == 2 %}selected{% endif %}>{{ file.file.name }}</option>
+                {% empty %}
+                <option>No files yet</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div style="margin-top:18px">
+              <button type="submit" name="compare" class="btn btn-primary" style="height:32px">
+                <i class="fa fa-arrow-right-arrow-left"></i> Run Comparison
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Compare results -->
+        {% if compare_data %}
+        <div class="compare-result-grid">
+
+          <!-- Chart -->
+          <div class="full-panel">
+            <div class="panel-head">
+              <div class="panel-title"><i class="fa fa-chart-bar"></i> Visual Comparison</div>
+            </div>
+            <div class="panel-body" style="display:flex;align-items:center;justify-content:center;">
+              {% if compare_data.error %}
+              <p class="err-msg">{{ compare_data.error }}</p>
+              {% else %}
+              <img src="/static/{{ compare_data.chart }}" style="max-width:100%;border-radius:8px;border:1px solid var(--border2)">
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Diff list -->
+          <div class="full-panel">
+            <div class="panel-head">
+              <div class="panel-title"><i class="fa fa-table-list"></i> Subject Differences</div>
+            </div>
+            <div class="panel-body">
+              {% if not compare_data.error %}
+              <ul class="diff-list">
+                {% for subject, value in compare_data.difference.items %}
+                <li class="diff-item">
+                  <span class="diff-subj">{{ subject }}</span>
+                  {% if value > 0 %}
+                    <span class="diff-up">▲ +{{ value|floatformat:2 }}</span>
+                  {% elif value < 0 %}
+                    <span class="diff-dn">▼ {{ value|floatformat:2 }}</span>
+                  {% else %}
+                    <span class="diff-zero">— 0.00</span>
+                  {% endif %}
+                </li>
+                {% endfor %}
+              </ul>
+              {% endif %}
+            </div>
+          </div>
+
+        </div>
+        {% else %}
+        <div class="full-panel" style="flex:1">
+          <div class="empty-state" style="height:100%">
+            <i class="fa fa-code-compare" style="font-size:36px"></i>
+            <div style="font-size:14px;font-weight:600;color:var(--text2)">No Comparison Yet</div>
+            <div style="font-size:12px">Select two datasets above and click Run Comparison</div>
+          </div>
+        </div>
+        {% endif %}
+
+      </div>
+    </section>
+
+  </main>
 </div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">✅ File ready to upload!</div>
+<!-- Chart Lightbox Modal -->
+<div id="chartLightbox" class="lightbox-overlay" onclick="closeLightboxOnBg(event)">
+  <div class="lightbox-box" id="lightboxBox">
+    <div class="lightbox-head">
+      <span class="lightbox-title" id="lightboxTitle"></span>
+      <button class="lightbox-close" id="lightboxClose" onclick="closeLightbox()">
+        <i class="fa fa-xmark"></i>
+      </button>
+    </div>
+    <div class="lightbox-body">
+      <img id="lightboxImg" src="" alt="Chart">
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
 
 <script>
-    // File picker → show name + toast
-    function handleFile(input) {
-        const file = input.files[0];
-        if (!file) return;
-        document.getElementById('fileNameDisplay').textContent = file.name;
-        document.getElementById('fileLabel').textContent = '✅ File chosen';
-        showToast('File "' + file.name + '" selected!');
-    }
+/* ── Tab navigation ── */
+function showTab(name, el) {
+  document.querySelectorAll('.tab-page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  if (el) el.classList.add('active');
+}
 
-    function showToast(msg) {
-        const t = document.getElementById('toast');
-        t.textContent = msg;
-        t.style.display = 'block';
-        setTimeout(() => { t.style.display = 'none'; }, 3000);
-    }
+/* ── Auto-switch to Compare tab if ?compare is in URL ── */
+(function() {
+  const params = new URLSearchParams(window.location.search);
+  if (params.has('compare')) {
+    const compareNav = document.querySelector('.nav-item[onclick*="compare"]');
+    showTab('compare', compareNav);
+  }
+})();
 
-    // Search / filter table
-    function filterTable() {
-        const q = document.getElementById('searchInput').value.toLowerCase();
-        const rows = document.querySelectorAll('#tableBody tr');
-        rows.forEach(row => {
-            const name = row.cells[0]?.textContent.toLowerCase() || '';
-            row.style.display = name.includes(q) ? '' : 'none';
-        });
-    }
+/* ── File picker ── */
+document.getElementById('pickBtn').addEventListener('click', () => document.getElementById('csvFile').click());
 
-    // Click upload label opens file picker
-    document.querySelector('.upload-label').addEventListener('click', () => {
-        document.getElementById('csvFile').click();
-    });
+function handleFile(input) {
+  const f = input.files[0];
+  if (!f) return;
+  document.getElementById('fileLabel').textContent = '✓ Ready';
+  document.getElementById('chosenName').textContent = f.name;
+  showToast('Selected: ' + f.name);
+}
+
+/* ── Theme toggle ── */
+const html = document.documentElement;
+const themeBtn = document.getElementById('themeBtn');
+const themeIcon = document.getElementById('themeIcon');
+
+const saved = localStorage.getItem('em-theme') || 'light';
+html.setAttribute('data-theme', saved);
+syncThemeIcon(saved);
+
+themeBtn.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('em-theme', next);
+  syncThemeIcon(next);
+  themeBtn.classList.add('spin');
+  setTimeout(() => themeBtn.classList.remove('spin'), 400);
+});
+
+function syncThemeIcon(t) {
+  themeIcon.className = t === 'dark' ? 'fa fa-sun' : 'fa fa-moon';
+  themeBtn.title = t === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode';
+}
+
+/* ── Table search ── */
+function filterTable() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('#tableBody tr').forEach(r => {
+    r.style.display = (r.cells[0]?.textContent.toLowerCase().includes(q)) ? '' : 'none';
+  });
+}
+
+/* ── Toast ── */
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.display = 'block';
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.style.display = 'none', 3000);
+}
+
+/* ══════════════════════════════════════════════
+   CHART LIGHTBOX
+══════════════════════════════════════════════ */
+let _lbSource = null;
+
+function openLightbox(src, title, sourceId) {
+  if (!src || src.includes('undefined') || src.includes('None') || src.trim() === '/static/') return;
+  _lbSource = sourceId;
+
+  const overlay  = document.getElementById('chartLightbox');
+  const img      = document.getElementById('lightboxImg');
+  const lbTitle  = document.getElementById('lightboxTitle');
+  const box      = document.getElementById('lightboxBox');
+
+  img.src = src;
+  lbTitle.textContent = title;
+
+  /* Compute transform-origin from the source card position */
+  const srcEl = document.getElementById(sourceId);
+  if (srcEl) {
+    const r  = srcEl.getBoundingClientRect();
+    const cx = r.left + r.width  / 2;
+    const cy = r.top  + r.height / 2;
+    const ox = ((cx / window.innerWidth)  * 100).toFixed(1) + '%';
+    const oy = ((cy / window.innerHeight) * 100).toFixed(1) + '%';
+    box.style.transformOrigin = ox + ' ' + oy;
+  } else {
+    box.style.transformOrigin = 'center center';
+  }
+
+  overlay.classList.remove('closing');
+  requestAnimationFrame(() => {
+    overlay.classList.add('open');
+  });
+  document.body.style.overflow = 'hidden';
+}
+
+function closeLightbox() {
+  const overlay = document.getElementById('chartLightbox');
+  const box     = document.getElementById('lightboxBox');
+
+  /* Animate back toward source origin */
+  if (_lbSource) {
+    const srcEl = document.getElementById(_lbSource);
+    if (srcEl) {
+      const r  = srcEl.getBoundingClientRect();
+      const cx = r.left + r.width  / 2;
+      const cy = r.top  + r.height / 2;
+      const ox = ((cx / window.innerWidth)  * 100).toFixed(1) + '%';
+      const oy = ((cy / window.innerHeight) * 100).toFixed(1) + '%';
+      box.style.transformOrigin = ox + ' ' + oy;
+    }
+  }
+
+  overlay.classList.add('closing');
+  setTimeout(() => {
+    overlay.classList.remove('open', 'closing');
+    document.getElementById('lightboxImg').src = '';
+    document.body.style.overflow = '';
+    _lbSource = null;
+  }, 340);
+}
+
+function closeLightboxOnBg(e) {
+  if (e.target === document.getElementById('chartLightbox')) closeLightbox();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeLightbox();
+});
 </script>
-
 </body>
 </html>
